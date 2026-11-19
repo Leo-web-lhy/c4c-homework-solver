@@ -1,0 +1,101 @@
+[
+  {
+    "id": "1",
+    "text": "设矩阵 $A = [[2, 1], [5, 3]]$，求 $A^{-1}$。",
+    "math_expressions": [
+      {
+        "type": "inline",
+        "latex": "A = [[2, 1], [5, 3]]"
+      },
+      {
+        "type": "inline",
+        "latex": "A^{-1}"
+      }
+    ],
+    "type": "conceptual",
+    "sub_problems": []
+  },
+  {
+    "id": "2",
+    "text": "设矩阵 $B = [[4, 1], [2, 3]]$，求 $B$ 的全部特征值与对应特征向量。",
+    "math_expressions": [
+      {
+        "type": "inline",
+        "latex": "B = [[4, 1], [2, 3]]"
+      },
+      {
+        "type": "inline",
+        "latex": "B"
+      }
+    ],
+    "type": "conceptual",
+    "sub_problems": []
+  },
+  {
+    "id": "3",
+    "text": "求解线性方程组 $2x + y - z = 1; x - y + z = 2; 3x + 2y + z = 8$。",
+    "math_expressions": [
+      {
+        "type": "inline",
+        "latex": "2x + y - z = 1; x - y + z = 2; 3x + 2y + z = 8"
+      }
+    ],
+    "type": "conceptual",
+    "sub_problems": []
+  },
+  {
+    "id": "4",
+    "text": "求解可分离变量的初值问题：solve the ODE $y' = 2*x*y$, with $y(0) = 3$。",
+    "math_expressions": [
+      {
+        "type": "inline",
+        "latex": "y' = 2*x*y"
+      },
+      {
+        "type": "inline",
+        "latex": "y(0) = 3"
+      }
+    ],
+    "type": "conceptual",
+    "sub_problems": []
+  },
+  {
+    "id": "5",
+    "text": "求解一阶线性初值问题：solve the ODE $y' + 3*y = 6$, with $y(0) = 0$。",
+    "math_expressions": [
+      {
+        "type": "inline",
+        "latex": "y' + 3*y = 6"
+      },
+      {
+        "type": "inline",
+        "latex": "y(0) = 0"
+      }
+    ],
+    "type": "conceptual",
+    "sub_problems": []
+  },
+  {
+    "id": "6",
+    "text": "求解二阶常系数齐次初值问题：solve the ODE $y'' - y' - 6*y = 0$, with $y(0) = 1, y'(0) = 0$。",
+    "math_expressions": [
+      {
+        "type": "inline",
+        "latex": "y'' - y' - 6*y = 0"
+      },
+      {
+        "type": "inline",
+        "latex": "y(0) = 1, y'(0) = 0"
+      }
+    ],
+    "type": "conceptual",
+    "sub_problems": []
+  },
+  {
+    "id": "7",
+    "text": "请用文字说明：为什么二阶线性齐次微分方程的两个线性无关解可以构成它的通解？\n\n\n- 每题需给出推导步骤与最终答案。\n- 概念题需给出完整中文说明，不使用公式编号代替论证。",
+    "math_expressions": [],
+    "type": "conceptual",
+    "sub_problems": []
+  }
+]

@@ -1,0 +1,199 @@
+{
+  "solutions": [
+    {
+      "id": "1",
+      "text": "设矩阵 $A = [[2, 1], [5, 3]]$，求 $A^{-1}$。",
+      "math_expressions": [
+        {
+          "type": "inline",
+          "latex": "A = [[2, 1], [5, 3]]"
+        },
+        {
+          "type": "inline",
+          "latex": "A^{-1}"
+        }
+      ],
+      "type": "conceptual",
+      "sub_problems": [],
+      "solved": true,
+      "steps": [],
+      "answer_latex": "A^{-1} = \\left[\\begin{matrix}3 & -1\\\\-5 & 2\\end{matrix}\\right]",
+      "backend": "sympy",
+      "verify": "独立校验通过：A A^{-1} = \\left[\\begin{matrix}1 & 0\\\\0 & 1\\end{matrix}\\right]",
+      "meta": {
+        "det": "1",
+        "invertible": true,
+        "solver": "la_matrix_form",
+        "verify_ok": true
+      }
+    },
+    {
+      "id": "2",
+      "text": "设矩阵 $B = [[4, 1], [2, 3]]$，求 $B$ 的全部特征值与对应特征向量。",
+      "math_expressions": [
+        {
+          "type": "inline",
+          "latex": "B = [[4, 1], [2, 3]]"
+        },
+        {
+          "type": "inline",
+          "latex": "B"
+        }
+      ],
+      "type": "conceptual",
+      "sub_problems": [],
+      "solved": true,
+      "steps": [],
+      "answer_latex": "\\lambda = 2,\\ 5;\\quad v = \\left[\\begin{matrix}- \\frac{1}{2}\\\\1\\end{matrix}\\right],\\ \\left[\\begin{matrix}1\\\\1\\end{matrix}\\right]",
+      "backend": "sympy",
+      "verify": "独立校验通过：Av=\\lambda v",
+      "meta": {
+        "eigen_pairs": 2,
+        "complex": false,
+        "solver": "la_eigen",
+        "verify_ok": true
+      }
+    },
+    {
+      "id": "3",
+      "text": "求解线性方程组 $2x + y - z = 1; x - y + z = 2; 3x + 2y + z = 8$。",
+      "math_expressions": [
+        {
+          "type": "inline",
+          "latex": "2x + y - z = 1; x - y + z = 2; 3x + 2y + z = 8"
+        }
+      ],
+      "type": "conceptual",
+      "sub_problems": [],
+      "solved": true,
+      "steps": [],
+      "answer_latex": "\\left(1, \\frac{4}{3}, \\frac{7}{3}\\right)",
+      "backend": "sympy",
+      "verify": "独立校验通过：\\text{residual}=0",
+      "meta": {
+        "unique": true,
+        "free_symbols": "",
+        "solver": "la_solve_linear_system",
+        "verify_ok": true
+      }
+    },
+    {
+      "id": "4",
+      "text": "求解可分离变量的初值问题：solve the ODE $y' = 2*x*y$, with $y(0) = 3$。",
+      "math_expressions": [
+        {
+          "type": "inline",
+          "latex": "y' = 2*x*y"
+        },
+        {
+          "type": "inline",
+          "latex": "y(0) = 3"
+        }
+      ],
+      "type": "conceptual",
+      "sub_problems": [],
+      "solved": true,
+      "steps": [],
+      "answer_latex": "3 e^{x^{2}}",
+      "backend": "sympy",
+      "verify": "独立校验通过：0",
+      "meta": {
+        "order": 1,
+        "kind": "linear_first",
+        "P": "-2*x",
+        "Q": "0",
+        "ic": true,
+        "solver": "ode_linear_first",
+        "verify_ok": true
+      }
+    },
+    {
+      "id": "5",
+      "text": "求解一阶线性初值问题：solve the ODE $y' + 3*y = 6$, with $y(0) = 0$。",
+      "math_expressions": [
+        {
+          "type": "inline",
+          "latex": "y' + 3*y = 6"
+        },
+        {
+          "type": "inline",
+          "latex": "y(0) = 0"
+        }
+      ],
+      "type": "conceptual",
+      "sub_problems": [],
+      "solved": true,
+      "steps": [],
+      "answer_latex": "2 - 2 e^{- 3 x}",
+      "backend": "sympy",
+      "verify": "独立校验通过：0",
+      "meta": {
+        "order": 1,
+        "kind": "linear_first",
+        "P": "0",
+        "Q": "6",
+        "ic": true,
+        "solver": "ode_linear_first",
+        "verify_ok": true
+      }
+    },
+    {
+      "id": "6",
+      "text": "求解二阶常系数齐次初值问题：solve the ODE $y'' - y' - 6*y = 0$, with $y(0) = 1, y'(0) = 0$。",
+      "math_expressions": [
+        {
+          "type": "inline",
+          "latex": "y'' - y' - 6*y = 0"
+        },
+        {
+          "type": "inline",
+          "latex": "y(0) = 1, y'(0) = 0"
+        }
+      ],
+      "type": "conceptual",
+      "sub_problems": [],
+      "solved": true,
+      "steps": [],
+      "answer_latex": "\\frac{\\left(2 e^{5 x} + 3\\right) e^{- 2 x}}{5}",
+      "backend": "sympy",
+      "verify": "独立校验通过：0",
+      "meta": {
+        "order": 2,
+        "kind": "second_order_cc",
+        "roots": [
+          "0",
+          "6"
+        ],
+        "forcing": "0",
+        "ic": true,
+        "solver": "ode_second_order_cc",
+        "verify_ok": true
+      }
+    },
+    {
+      "id": "7",
+      "text": "请用文字说明：为什么二阶线性齐次微分方程的两个线性无关解可以构成它的通解？\n\n\n- 每题需给出推导步骤与最终答案。\n- 概念题需给出完整中文说明，不使用公式编号代替论证。",
+      "math_expressions": [],
+      "type": "conceptual",
+      "sub_problems": [],
+      "solved": false,
+      "steps": [],
+      "answer_latex": "",
+      "backend": "none",
+      "reason": "该题未命中 linear_algebra_ode 领域的任何求解模式，流水线按契约原样返回题目文本，不臆造答案。 [solver_error:ValueError]",
+      "verify": "本题为概念题，无可代入的等式，改由人工核对（见验证报告）。",
+      "meta": {
+        "reason_code": "solver_error:ValueError"
+      }
+    }
+  ],
+  "meta": {
+    "domain": "linear_algebra_ode",
+    "kernel": "la_ode",
+    "total": 7,
+    "solved": 6,
+    "unsolved": 1,
+    "verify_ok": 6,
+    "verify_fail": 0
+  }
+}

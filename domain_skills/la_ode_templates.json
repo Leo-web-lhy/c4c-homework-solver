@@ -1,0 +1,144 @@
+{
+  "_comment": "Chinese step templates for solve_kernel.py. This file exists as data on purpose: the target machine crashes on non-ASCII literals inside Python source, so every Chinese string lives here and the code only does str.format on it.",
+  "la_matrix_form": {
+    "title": "矩阵的行列式与逆矩阵",
+    "steps": [
+      "记 $A = {A}$，按定义先算行列式。",
+      "$\\det A = {det}$。",
+      "{invertible_note}",
+      "伴随矩阵法：$A^{{-1}} = \\dfrac{{1}}{{\\det A}}\\,\\mathrm{{adj}}A$。",
+      "代入得 $A^{{-1}} = {inv}$。",
+      "校验：$A A^{{-1}} = {check}$，与单位阵一致，结果自洽。"
+    ],
+    "not_invertible": "因为 $\\det A = 0$，矩阵不可逆，题目要求的逆矩阵不存在。",
+    "invertible": "因为 $\\det A = {det} \\neq 0$，矩阵可逆。",
+    "answer_inv": "A^{{-1}} = {inv}",
+    "answer_det": "\\det A = {det}（矩阵不可逆，逆矩阵不存在）"
+  },
+  "la_eigen": {
+    "title": "特征值与特征向量",
+    "steps": [
+      "记 $A = {A}$。",
+      "特征多项式：$\\det(A - \\lambda I) = {charpoly}$。",
+      "解得特征值 $\\lambda = {eigs}$（重数已合并）。",
+      "对每个特征值解 $(A-\\lambda I)v = 0$，得到对应特征向量。",
+      "特征向量取 $v = {vecs}$。",
+      "校验：逐个验证 $Av = \\lambda v$，{check_note}。"
+    ],
+    "answer": "\\lambda = {eigs};\\quad v = {vecs}",
+    "complex_note": "存在复特征值，已在答案中如实保留共轭对，未强行取实。"
+  },
+  "la_solve_linear_system": {
+    "title": "线性方程组求解",
+    "steps": [
+      "方程组为 {eqs}。",
+      "写成增广矩阵并做初等行变换化简。",
+      "化简后得 {rref_note}。",
+      "解集为 {solset}。",
+      "校验：把解代回原方程组，{check_note}。"
+    ],
+    "answer": "{solset}",
+    "unique": "方程组有唯一解。",
+    "infinite": "方程组有无穷多解，自由变量为 {free}，解集用参数形式如实写出。",
+    "none": "方程组无解（化简后出现 $0 = 1$ 型矛盾行）。"
+  },
+  "ode_separable": {
+    "title": "一阶可分离变量方程",
+    "steps": [
+      "方程 {ode} 中变量可分离，改写为两侧各自只含一个变量。",
+      "两边同时积分，得 {integral}。",
+      "整理得通解 {general}。",
+      "{ic_note}",
+      "校验：把解回代原方程，{check_note}。"
+    ],
+    "answer": "{answer}",
+    "ic_note_with": "代入初始条件 {ic}，定出常数，得特解。",
+    "ic_note_without": "题目未给初始条件，答案保留任意常数，通解即最终答案。"
+  },
+  "ode_linear_first": {
+    "title": "一阶线性方程（积分因子法）",
+    "steps": [
+      "把 {ode} 化为标准形式 $y' + P(x)y = Q(x)$，其中 $P(x) = {P}$，$Q(x) = {Q}$。",
+      "积分因子 $\\mu(x) = e^{{\\int P\\,dx}} = {mu}$。",
+      "两边乘 $\\mu$，左边成为 $(\\mu y)'$，得 $(\\mu y)' = \\mu Q$。",
+      "两边积分得 $\\mu y = {integral} + C$。",
+      "故通解 {general}。",
+      "{ic_note}",
+      "校验：把解回代原方程，{check_note}。"
+    ],
+    "answer": "{answer}",
+    "ic_note_with": "代入初始条件 {ic} 定出 $C$，得特解。",
+    "ic_note_without": "题目未给初始条件，答案保留任意常数 $C$。"
+  },
+  "ode_second_order_cc": {
+    "title": "二阶常系数线性方程",
+    "steps": [
+      "方程 {ode} 的特征方程为 {char_eq}。",
+      "特征根 $r = {roots}$，属{root_kind}情形。",
+      "齐次通解 $y_h = {y_h}$。",
+      "{particular_note}",
+      "全解 {general}。",
+      "{ic_note}",
+      "校验：把解回代原方程，{check_note}。"
+    ],
+    "answer": "{answer}",
+    "root_kind_distinct": "两个相异实根",
+    "root_kind_repeat": "二重实根",
+    "root_kind_complex": "共轭复根",
+    "particular_none": "方程为齐次（右端为 $0$），无特解项。",
+    "particular_have": "非齐次项 $g(x) = {g}$，其特解 $y_p = {y_p}$（待定系数法求得）。",
+    "ic_note_with": "代入初始条件 {ic} 定出两个常数，得特解。",
+    "ic_note_without": "题目未给初始条件，答案保留两个任意常数，通解即最终答案。"
+  },
+  "unsolved": {
+    "title": "未自动求解",
+    "reason": "该题未命中 {domain} 领域的任何求解模式，流水线按契约原样返回题目文本，不臆造答案。",
+    "reason_nollm": "该题未命中任何确定性求解模式，且当前无可用 LLM 后端（{llm_reason}），故如实标记为未求解。"
+  },
+  "verify": {
+    "ok": "独立校验通过：{detail}",
+    "fail": "独立校验未通过：{detail}（该题已标记为需人工复核）",
+    "skip": "本题为概念题，无可代入的等式，改由人工核对（见验证报告）。"
+  },
+  "keywords": {
+    "la_eigen": [
+      "特征值",
+      "特征向量",
+      "eigen",
+      "特征多项式",
+      "\\lambda"
+    ],
+    "la_matrix_form": [
+      "逆矩阵",
+      "行列式",
+      "det",
+      "inverse",
+      "可逆",
+      "adjugate"
+    ],
+    "la_solve_linear_system": [
+      "线性方程组",
+      "方程组",
+      "linear system",
+      "增广矩阵",
+      "无解",
+      "唯一解"
+    ],
+    "ode_separable": [
+      "可分离",
+      "分离变量",
+      "separable"
+    ],
+    "ode_linear_first": [
+      "一阶线性",
+      "积分因子",
+      "integrating factor"
+    ],
+    "ode_second_order_cc": [
+      "二阶",
+      "常系数",
+      "second-order",
+      "特征方程"
+    ]
+  }
+}
