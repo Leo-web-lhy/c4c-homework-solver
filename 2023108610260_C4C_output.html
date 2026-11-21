@@ -31,60 +31,162 @@ table.sum th { background: #eef3fa; }
 .bad { color: #b03a2e; font-weight: bold; }
 footer { margin-top: 14pt; padding-top: 5pt; border-top: .6pt solid #ccc;
          font-size: 8.6pt; color: #777; }
+.prob { page-break-inside: avoid; margin: 0 0 6pt 0; }
+ol.steps { margin: 3pt 0 4pt 0; padding-left: 20pt; }
+ol.steps li { margin: 2.5pt 0; line-height: 1.6; }
+.seclbl { display: block; font-size: 8.4pt; font-weight: bold; color: #1d4e89;
+          letter-spacing: .3pt; margin: 6pt 0 1pt 0; text-transform: none; }
+.vr { border-left: 3pt solid #1d4e89; background: #f5f8fc; padding: 3pt 8pt;
+      margin: 4pt 0 2pt 0; font-size: 9.4pt; color: #26456b; }
+.vr .lbl { font-weight: bold; }
+.vr.bad { border-left-color: #b03a2e; background: #fdf3f2; color: #96271b; }
+.manual { border: .8pt dashed #b06f00; background: #fffdf5; padding: 6pt 9pt;
+          margin: 6pt 0 2pt 0; }
+.manual .mlbl { font-weight: bold; color: #8a5600; font-size: 9.6pt; margin-bottom: 3pt; }
+.manual p.mp { margin: 3pt 0; text-align: justify; line-height: 1.68; }
+.manual p.mnote { margin: 5pt 0 0 0; padding-top: 4pt; border-top: .5pt dotted #d8b878;
+                  color: #5c3d00; }
 </style></head><body>
 <h1>2023108610260_C4C 作业解答</h1>
 <p class="sub">线性代数与常微分方程</p>
 <p class="meta">2023108610260 &middot; </p>
 <hr class="rule">
 <h2>题目与解答</h2>
+<div class="prob">
 <h3>
 1. 
 
 </h3>
+<div class="seclbl">题干</div>
 <div class="q">设矩阵 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>A</mi><mo>&#x0003D;</mo><mo stretchy="false">[</mo><mo stretchy="false">[</mo><mn>2</mn><mo>&#x0002C;</mo><mn>1</mn><mo stretchy="false">]</mo><mo>&#x0002C;</mo><mo stretchy="false">[</mo><mn>5</mn><mo>&#x0002C;</mo><mn>3</mn><mo stretchy="false">]</mo><mo stretchy="false">]</mo></mrow></math>，求 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>A</mi><mrow><mo>&#x02212;</mo><mn>1</mn></mrow></msup></mrow></math>。</div>
-<div class="ans"><span class="lbl">答案：</span> <span class="dispmath"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>A</mi><mrow><mo>&#x02212;</mo><mn>1</mn></mrow></msup><mo>&#x0003D;</mo><mrow><mo stretchy="true" fence="true" form="prefix">[</mo><mtable><mtr><mtd><mn>3</mn></mtd><mtd><mo>&#x02212;</mo><mn>1</mn></mtd></mtr><mtr><mtd><mo>&#x02212;</mo><mn>5</mn></mtd><mtd><mn>2</mn></mtd></mtr></mtable><mo stretchy="true" fence="true" form="postfix">]</mo></mrow></mrow></math></span></div>
-<div class="note">独立校验通过：A A^{-1} = \left[\begin{matrix}1 &amp; 0\\0 &amp; 1\end{matrix}\right]</div>
+<div class="seclbl">推导步骤</div>
+<ol class="steps">
+<li>记 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>A</mi><mo>&#x0003D;</mo><mrow><mo stretchy="true" fence="true" form="prefix">[</mo><mtable><mtr><mtd><mn>2</mn></mtd><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>5</mn></mtd><mtd><mn>3</mn></mtd></mtr></mtable><mo stretchy="true" fence="true" form="postfix">]</mo></mrow></mrow></math>，按定义先算行列式。</li>
+<li><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo movablelimits="true">det</mo><mi>A</mi><mo>&#x0003D;</mo><mn>1</mn></mrow></math>。</li>
+<li>因为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo movablelimits="true">det</mo><mi>A</mi><mo>&#x0003D;</mo><mn>1</mn><mo>&#x02260;</mo><mn>0</mn></mrow></math>，矩阵可逆。</li>
+<li>伴随矩阵法：<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>A</mi><mrow><mo>&#x02212;</mo><mn>1</mn></mrow></msup><mo>&#x0003D;</mo><mstyle displaystyle="true" scriptlevel="0"><mfrac><mrow><mn>1</mn></mrow><mrow><mo movablelimits="true">det</mo><mi>A</mi></mrow></mfrac></mstyle><mspace width="0.167em" /><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">j</mi></mrow><mi>A</mi></mrow></math>。</li>
+<li>代入得 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>A</mi><mrow><mo>&#x02212;</mo><mn>1</mn></mrow></msup><mo>&#x0003D;</mo><mrow><mo stretchy="true" fence="true" form="prefix">[</mo><mtable><mtr><mtd><mn>3</mn></mtd><mtd><mo>&#x02212;</mo><mn>1</mn></mtd></mtr><mtr><mtd><mo>&#x02212;</mo><mn>5</mn></mtd><mtd><mn>2</mn></mtd></mtr></mtable><mo stretchy="true" fence="true" form="postfix">]</mo></mrow></mrow></math>。</li>
+<li>校验：<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>A</mi><msup><mi>A</mi><mrow><mo>&#x02212;</mo><mn>1</mn></mrow></msup><mo>&#x0003D;</mo><mrow><mo stretchy="true" fence="true" form="prefix">[</mo><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd></mtr></mtable><mo stretchy="true" fence="true" form="postfix">]</mo></mrow></mrow></math>，与单位阵一致，结果自洽。</li>
+</ol>
+<div class="ans"><span class="lbl">最终答案：</span> <span class="dispmath"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>A</mi><mrow><mo>&#x02212;</mo><mn>1</mn></mrow></msup><mo>&#x0003D;</mo><mrow><mo stretchy="true" fence="true" form="prefix">[</mo><mtable><mtr><mtd><mn>3</mn></mtd><mtd><mo>&#x02212;</mo><mn>1</mn></mtd></mtr><mtr><mtd><mo>&#x02212;</mo><mn>5</mn></mtd><mtd><mn>2</mn></mtd></mtr></mtable><mo stretchy="true" fence="true" form="postfix">]</mo></mrow></mrow></math></span></div>
+<div class="vr"><span class="lbl">独立校验：</span> 独立校验通过：A A^{-1} = \left[\begin{matrix}1 &amp; 0\\0 &amp; 1\end{matrix}\right]</div>
+</div>
+<div class="prob">
 <h3>
 2. 
 
 </h3>
+<div class="seclbl">题干</div>
 <div class="q">设矩阵 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mo stretchy="false">[</mo><mo stretchy="false">[</mo><mn>4</mn><mo>&#x0002C;</mo><mn>1</mn><mo stretchy="false">]</mo><mo>&#x0002C;</mo><mo stretchy="false">[</mo><mn>2</mn><mo>&#x0002C;</mo><mn>3</mn><mo stretchy="false">]</mo><mo stretchy="false">]</mo></mrow></math>，求 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi></mrow></math> 的全部特征值与对应特征向量。</div>
-<div class="ans"><span class="lbl">答案：</span> <span class="dispmath"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi><mo>&#x0003D;</mo><mn>2</mn><mo>&#x0002C;</mo><mtext>&#x000A0;</mtext><mn>5</mn><mi>;</mi><mspace width="1em" /><mi>v</mi><mo>&#x0003D;</mo><mrow><mo stretchy="true" fence="true" form="prefix">[</mo><mtable><mtr><mtd><mo>&#x02212;</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac></mtd></mtr><mtr><mtd><mn>1</mn></mtd></mtr></mtable><mo stretchy="true" fence="true" form="postfix">]</mo></mrow><mo>&#x0002C;</mo><mtext>&#x000A0;</mtext><mrow><mo stretchy="true" fence="true" form="prefix">[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd></mtr></mtable><mo stretchy="true" fence="true" form="postfix">]</mo></mrow></mrow></math></span></div>
-<div class="note">独立校验通过：Av=\lambda v</div>
+<div class="seclbl">推导步骤</div>
+<ol class="steps">
+<li>记 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>A</mi><mo>&#x0003D;</mo><mrow><mo stretchy="true" fence="true" form="prefix">[</mo><mtable><mtr><mtd><mn>4</mn></mtd><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd><mtd><mn>3</mn></mtd></mtr></mtable><mo stretchy="true" fence="true" form="postfix">]</mo></mrow></mrow></math>。</li>
+<li>特征多项式：<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo movablelimits="true">det</mo><mo stretchy="false">&#x00028;</mo><mi>A</mi><mo>&#x02212;</mo><mi>&#x003BB;</mi><mi>I</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><mi>&#x003BB;</mi><mo>&#x02212;</mo><mn>5</mn><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><mi>&#x003BB;</mi><mo>&#x02212;</mo><mn>2</mn><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow></mrow></math>。</li>
+<li>解得特征值 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi><mo>&#x0003D;</mo><mn>2</mn><mo>&#x0002C;</mo><mtext>&#x000A0;</mtext><mn>5</mn></mrow></math>（重数已合并）。</li>
+<li>对每个特征值解 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mi>A</mi><mo>&#x02212;</mo><mi>&#x003BB;</mi><mi>I</mi><mo stretchy="false">&#x00029;</mo><mi>v</mi><mo>&#x0003D;</mo><mn>0</mn></mrow></math>，得到对应特征向量。</li>
+<li>特征向量取 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>v</mi><mo>&#x0003D;</mo><mrow><mo stretchy="true" fence="true" form="prefix">[</mo><mtable><mtr><mtd><mo>&#x02212;</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac></mtd></mtr><mtr><mtd><mn>1</mn></mtd></mtr></mtable><mo stretchy="true" fence="true" form="postfix">]</mo></mrow><mo>&#x0002C;</mo><mtext>&#x000A0;</mtext><mrow><mo stretchy="true" fence="true" form="prefix">[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd></mtr></mtable><mo stretchy="true" fence="true" form="postfix">]</mo></mrow></mrow></math>。</li>
+<li>校验：逐个验证 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>A</mi><mi>v</mi><mo>&#x0003D;</mo><mi>&#x003BB;</mi><mi>v</mi></mrow></math>，Av=\lambda v。</li>
+</ol>
+<div class="ans"><span class="lbl">最终答案：</span> <span class="dispmath"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi><mo>&#x0003D;</mo><mn>2</mn><mo>&#x0002C;</mo><mtext>&#x000A0;</mtext><mn>5</mn><mi>;</mi><mspace width="1em" /><mi>v</mi><mo>&#x0003D;</mo><mrow><mo stretchy="true" fence="true" form="prefix">[</mo><mtable><mtr><mtd><mo>&#x02212;</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac></mtd></mtr><mtr><mtd><mn>1</mn></mtd></mtr></mtable><mo stretchy="true" fence="true" form="postfix">]</mo></mrow><mo>&#x0002C;</mo><mtext>&#x000A0;</mtext><mrow><mo stretchy="true" fence="true" form="prefix">[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd></mtr></mtable><mo stretchy="true" fence="true" form="postfix">]</mo></mrow></mrow></math></span></div>
+<div class="vr"><span class="lbl">独立校验：</span> 独立校验通过：Av=\lambda v</div>
+</div>
+<div class="prob">
 <h3>
 3. 
 
 </h3>
+<div class="seclbl">题干</div>
 <div class="q">求解线性方程组 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>2</mn><mi>x</mi><mo>&#x0002B;</mo><mi>y</mi><mo>&#x02212;</mo><mi>z</mi><mo>&#x0003D;</mo><mn>1</mn><mi>;</mi><mi>x</mi><mo>&#x02212;</mo><mi>y</mi><mo>&#x0002B;</mo><mi>z</mi><mo>&#x0003D;</mo><mn>2</mn><mi>;</mi><mn>3</mn><mi>x</mi><mo>&#x0002B;</mo><mn>2</mn><mi>y</mi><mo>&#x0002B;</mo><mi>z</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math>。</div>
-<div class="ans"><span class="lbl">答案：</span> <span class="dispmath"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><mn>1</mn><mo>&#x0002C;</mo><mfrac><mrow><mn>4</mn></mrow><mrow><mn>3</mn></mrow></mfrac><mo>&#x0002C;</mo><mfrac><mrow><mn>7</mn></mrow><mrow><mn>3</mn></mrow></mfrac><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow></mrow></math></span></div>
-<div class="note">独立校验通过：\text{residual}=0</div>
+<div class="seclbl">推导步骤</div>
+<ol class="steps">
+<li>方程组为 2 x + y - z - 1 = 0,\ x - y + z - 2 = 0,\ 3 x + 2 y + z - 8 = 0。</li>
+<li>写成增广矩阵并做初等行变换化简。</li>
+<li>化简后得 方程组有唯一解。</li>
+<li>解集为 \left(1, \frac{4}{3}, \frac{7}{3}\right)。</li>
+<li>校验：把解代回原方程组，\text{residual}=0。</li>
+</ol>
+<div class="ans"><span class="lbl">最终答案：</span> <span class="dispmath"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><mn>1</mn><mo>&#x0002C;</mo><mfrac><mrow><mn>4</mn></mrow><mrow><mn>3</mn></mrow></mfrac><mo>&#x0002C;</mo><mfrac><mrow><mn>7</mn></mrow><mrow><mn>3</mn></mrow></mfrac><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow></mrow></math></span></div>
+<div class="vr"><span class="lbl">独立校验：</span> 独立校验通过：\text{residual}=0</div>
+</div>
+<div class="prob">
 <h3>
 4. 
 
 </h3>
+<div class="seclbl">题干</div>
 <div class="q">求解可分离变量的初值问题：solve the ODE <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>y</mi><mi>&#x02032;</mi></msup><mo>&#x0003D;</mo><mn>2</mn><mo>&#x0002A;</mo><mi>x</mi><mo>&#x0002A;</mo><mi>y</mi></mrow></math>, with <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>y</mi><mo stretchy="false">&#x00028;</mo><mn>0</mn><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mn>3</mn></mrow></math>。</div>
-<div class="ans"><span class="lbl">答案：</span> <span class="dispmath"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>3</mn><msup><mi>e</mi><mrow><msup><mi>x</mi><mrow><mn>2</mn></mrow></msup></mrow></msup></mrow></math></span></div>
-<div class="note">独立校验通过：0</div>
+<div class="seclbl">推导步骤</div>
+<ol class="steps">
+<li>把 \frac{d}{d x} y{\left(x \right)} = 2 x y{\left(x \right)} 化为标准形式 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>y</mi><mi>&#x02032;</mi></msup><mo>&#x0002B;</mo><mi>P</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><mi>y</mi><mo>&#x0003D;</mo><mi>Q</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></math>，其中 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>P</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mo>&#x02212;</mo><mn>2</mn><mi>x</mi></mrow></math>，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>Q</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mn>0</mn></mrow></math>。</li>
+<li>积分因子 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BC;</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msup><mi>e</mi><mrow><mo>&#x0222B;</mo><mi>P</mi><mspace width="0.167em" /><mi>d</mi><mi>x</mi></mrow></msup><mo>&#x0003D;</mo><msup><mi>e</mi><mrow><mo>&#x02212;</mo><msup><mi>x</mi><mrow><mn>2</mn></mrow></msup></mrow></msup></mrow></math>。</li>
+<li>两边乘 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BC;</mi></mrow></math>，左边成为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mi>&#x003BC;</mi><mi>y</mi><msup><mo stretchy="false">&#x00029;</mo><mi>&#x02032;</mi></msup></mrow></math>，得 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mi>&#x003BC;</mi><mi>y</mi><msup><mo stretchy="false">&#x00029;</mo><mi>&#x02032;</mi></msup><mo>&#x0003D;</mo><mi>&#x003BC;</mi><mi>Q</mi></mrow></math>。</li>
+<li>两边积分得 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BC;</mi><mi>y</mi><mo>&#x0003D;</mo><mn>0</mn><mo>&#x0002B;</mo><mi>C</mi></mrow></math>。</li>
+<li>故通解 C_{1} e^{x^{2}}。</li>
+<li>代入初始条件 y(0) = \mathtt{\text{3}} 定出 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>C</mi></mrow></math>，得特解。</li>
+<li>校验：把解回代原方程，0。</li>
+</ol>
+<div class="ans"><span class="lbl">最终答案：</span> <span class="dispmath"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>3</mn><msup><mi>e</mi><mrow><msup><mi>x</mi><mrow><mn>2</mn></mrow></msup></mrow></msup></mrow></math></span></div>
+<div class="vr"><span class="lbl">独立校验：</span> 独立校验通过：0</div>
+</div>
+<div class="prob">
 <h3>
 5. 
 
 </h3>
+<div class="seclbl">题干</div>
 <div class="q">求解一阶线性初值问题：solve the ODE <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>y</mi><mi>&#x02032;</mi></msup><mo>&#x0002B;</mo><mn>3</mn><mo>&#x0002A;</mo><mi>y</mi><mo>&#x0003D;</mo><mn>6</mn></mrow></math>, with <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>y</mi><mo stretchy="false">&#x00028;</mo><mn>0</mn><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mn>0</mn></mrow></math>。</div>
-<div class="ans"><span class="lbl">答案：</span> <span class="dispmath"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>2</mn><mo>&#x02212;</mo><mn>2</mn><msup><mi>e</mi><mrow><mo>&#x02212;</mo><mn>3</mn><mi>x</mi></mrow></msup></mrow></math></span></div>
-<div class="note">独立校验通过：0</div>
+<div class="seclbl">推导步骤</div>
+<ol class="steps">
+<li>把 3 y{\left(x \right)} + \frac{d}{d x} y{\left(x \right)} = 6 化为标准形式 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>y</mi><mi>&#x02032;</mi></msup><mo>&#x0002B;</mo><mi>P</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><mi>y</mi><mo>&#x0003D;</mo><mi>Q</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></math>，其中 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>P</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mn>3</mn></mrow></math>，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>Q</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mn>6</mn></mrow></math>。</li>
+<li>积分因子 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BC;</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msup><mi>e</mi><mrow><mo>&#x0222B;</mo><mi>P</mi><mspace width="0.167em" /><mi>d</mi><mi>x</mi></mrow></msup><mo>&#x0003D;</mo><msup><mi>e</mi><mrow><mn>3</mn><mi>x</mi></mrow></msup></mrow></math>。</li>
+<li>两边乘 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BC;</mi></mrow></math>，左边成为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mi>&#x003BC;</mi><mi>y</mi><msup><mo stretchy="false">&#x00029;</mo><mi>&#x02032;</mi></msup></mrow></math>，得 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mi>&#x003BC;</mi><mi>y</mi><msup><mo stretchy="false">&#x00029;</mo><mi>&#x02032;</mi></msup><mo>&#x0003D;</mo><mi>&#x003BC;</mi><mi>Q</mi></mrow></math>。</li>
+<li>两边积分得 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BC;</mi><mi>y</mi><mo>&#x0003D;</mo><mn>2</mn><msup><mi>e</mi><mrow><mn>3</mn><mi>x</mi></mrow></msup><mo>&#x0002B;</mo><mi>C</mi></mrow></math>。</li>
+<li>故通解 C_{1} e^{- 3 x} + 2。</li>
+<li>代入初始条件 y(0) = \mathtt{\text{0}} 定出 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>C</mi></mrow></math>，得特解。</li>
+<li>校验：把解回代原方程，0。</li>
+</ol>
+<div class="ans"><span class="lbl">最终答案：</span> <span class="dispmath"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>2</mn><mo>&#x02212;</mo><mn>2</mn><msup><mi>e</mi><mrow><mo>&#x02212;</mo><mn>3</mn><mi>x</mi></mrow></msup></mrow></math></span></div>
+<div class="vr"><span class="lbl">独立校验：</span> 独立校验通过：0</div>
+</div>
+<div class="prob">
 <h3>
 6. 
 
 </h3>
+<div class="seclbl">题干</div>
 <div class="q">求解二阶常系数齐次初值问题：solve the ODE <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>y</mi><mi>&#x02033;</mi></msup><mo>&#x02212;</mo><msup><mi>y</mi><mi>&#x02032;</mi></msup><mo>&#x02212;</mo><mn>6</mn><mo>&#x0002A;</mo><mi>y</mi><mo>&#x0003D;</mo><mn>0</mn></mrow></math>, with <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>y</mi><mo stretchy="false">&#x00028;</mo><mn>0</mn><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mn>1</mn><mo>&#x0002C;</mo><msup><mi>y</mi><mi>&#x02032;</mi></msup><mo stretchy="false">&#x00028;</mo><mn>0</mn><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mn>0</mn></mrow></math>。</div>
-<div class="ans"><span class="lbl">答案：</span> <span class="dispmath"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mfrac><mrow><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><mn>2</mn><msup><mi>e</mi><mrow><mn>5</mn><mi>x</mi></mrow></msup><mo>&#x0002B;</mo><mn>3</mn><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow><msup><mi>e</mi><mrow><mo>&#x02212;</mo><mn>2</mn><mi>x</mi></mrow></msup></mrow><mrow><mn>5</mn></mrow></mfrac></mrow></math></span></div>
-<div class="note">独立校验通过：0</div>
+<div class="seclbl">推导步骤</div>
+<ol class="steps">
+<li>方程 - 6 y{\left(x \right)} - \frac{d}{d x} y{\left(x \right)} + \frac{d^{2}}{d x^{2}} y{\left(x \right)} = 0 的特征方程为 r^{2} = r + 6。</li>
+<li>特征根 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>r</mi><mo>&#x0003D;</mo><mo>&#x02212;</mo><mn>2</mn><mo>&#x0002C;</mo><mn>3</mn></mrow></math>，属两个相异实根情形。</li>
+<li>齐次通解 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>y</mi><mi>h</mi></msub><mo>&#x0003D;</mo><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><msub><mi>C</mi><mrow><mn>1</mn></mrow></msub><mo>&#x0002B;</mo><msub><mi>C</mi><mrow><mn>2</mn></mrow></msub><msup><mi>e</mi><mrow><mn>5</mn><mi>x</mi></mrow></msup><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow><msup><mi>e</mi><mrow><mo>&#x02212;</mo><mn>2</mn><mi>x</mi></mrow></msup></mrow></math>。</li>
+<li>方程为齐次（右端为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0</mn></mrow></math>），无特解项。</li>
+<li>全解 \left(C_{1} + C_{2} e^{5 x}\right) e^{- 2 x}。</li>
+<li>代入初始条件 y(0) = \mathtt{\text{1}},\ y&#x27;(0) = \mathtt{\text{0}} 定出两个常数，得特解。</li>
+<li>校验：把解回代原方程，0。</li>
+</ol>
+<div class="ans"><span class="lbl">最终答案：</span> <span class="dispmath"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mfrac><mrow><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><mn>2</mn><msup><mi>e</mi><mrow><mn>5</mn><mi>x</mi></mrow></msup><mo>&#x0002B;</mo><mn>3</mn><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow><msup><mi>e</mi><mrow><mo>&#x02212;</mo><mn>2</mn><mi>x</mi></mrow></msup></mrow><mrow><mn>5</mn></mrow></mfrac></mrow></math></span></div>
+<div class="vr"><span class="lbl">独立校验：</span> 独立校验通过：0</div>
+</div>
+<div class="prob">
 <h3>
 7. 
 
 </h3>
+<div class="seclbl">题干</div>
 <div class="q">请用文字说明：为什么二阶线性齐次微分方程的两个线性无关解可以构成它的通解？<br><br><br>- 每题需给出推导步骤与最终答案。<br>- 概念题需给出完整中文说明，不使用公式编号代替论证。</div>
 <div class="unsolved"><strong>未自动求解：</strong> 该题未命中 linear_algebra_ode 领域的任何求解模式，流水线按契约原样返回题目文本，不臆造答案。 [solver_error:ValueError]</div>
-<div class="note">本题为概念题，无可代入的等式，改由人工核对（见验证报告）。</div>
+<div class="manual">
+<div class="mlbl">人工补充说明（作者撰写，非求解器输出）</div>
+<p class="mp">本题是概念说明题：没有可代入的等式，求解器按契约原样返回题目、不做臆测，因此下面的文字由作者撰写，并对每一步的数学依据做了核对（叠加原理、解的存在唯一性定理、朗斯基行列式的性质）。它属于人工补充，不计入自动求解统计。</p>
+<p class="mp">第一步，说明「解的任意线性组合仍是解」，即叠加原理。把方程写成算子形式 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>L</mi><mo stretchy="false">[</mo><mi>y</mi><mo stretchy="false">]</mo><mo>&#x0003D;</mo><msup><mi>y</mi><mi>&#x02033;</mi></msup><mo>&#x0002B;</mo><mi>p</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><msup><mi>y</mi><mi>&#x02032;</mi></msup><mo>&#x0002B;</mo><mi>q</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><mi>y</mi></mrow></math>。求导是线性运算，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>p</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></math>、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>q</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></math> 只是给定的系数函数，因此算子 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>L</mi></mrow></math> 是线性的：<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>L</mi><mo stretchy="false">[</mo><msub><mi>C</mi><mn>1</mn></msub><msub><mi>y</mi><mn>1</mn></msub><mo>&#x0002B;</mo><msub><mi>C</mi><mn>2</mn></msub><msub><mi>y</mi><mn>2</mn></msub><mo stretchy="false">]</mo><mo>&#x0003D;</mo><msub><mi>C</mi><mn>1</mn></msub><mi>L</mi><mo stretchy="false">[</mo><msub><mi>y</mi><mn>1</mn></msub><mo stretchy="false">]</mo><mo>&#x0002B;</mo><msub><mi>C</mi><mn>2</mn></msub><mi>L</mi><mo stretchy="false">[</mo><msub><mi>y</mi><mn>2</mn></msub><mo stretchy="false">]</mo></mrow></math>。若 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>y</mi><mn>1</mn></msub><mo>&#x0002C;</mo><msub><mi>y</mi><mn>2</mn></msub></mrow></math> 都是 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>L</mi><mo stretchy="false">[</mo><mi>y</mi><mo stretchy="false">]</mo><mo>&#x0003D;</mo><mn>0</mn></mrow></math> 的解，则右边两项都为 0，于是 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>C</mi><mn>1</mn></msub><msub><mi>y</mi><mn>1</mn></msub><mo>&#x0002B;</mo><msub><mi>C</mi><mn>2</mn></msub><msub><mi>y</mi><mn>2</mn></msub></mrow></math> 也是解。这说明解集对线性组合封闭，构成一个线性空间。</p>
+<p class="mp">第二步，说明这个线性空间的维数恰为 2。设 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>p</mi><mo>&#x0002C;</mo><mi>q</mi></mrow></math> 在区间 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>I</mi></mrow></math> 上连续。由解的存在唯一性定理，任取 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>x</mi><mn>0</mn></msub><mo>&#x02208;</mo><mi>I</mi></mrow></math> 和任意一组初值 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mi>a</mi><mo>&#x0002C;</mo><mi>b</mi><mo stretchy="false">&#x00029;</mo><mo>&#x02208;</mo><msup><mi>&#x0211D;</mi><mn>2</mn></msup></mrow></math>，方程在 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>I</mi></mrow></math> 上存在唯一的解满足 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>y</mi><mo stretchy="false">&#x00028;</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mi>a</mi></mrow></math>、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>y</mi><mi>&#x02032;</mi></msup><mo stretchy="false">&#x00028;</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mi>b</mi></mrow></math>。于是「解 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo>&#x021A6;</mo></mrow></math> 它在 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>x</mi><mn>0</mn></msub></mrow></math> 处的初值 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mi>y</mi><mo stretchy="false">&#x00028;</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0002C;</mo><msup><mi>y</mi><mi>&#x02032;</mi></msup><mo stretchy="false">&#x00028;</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x00029;</mo></mrow></math>」是从解空间到 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>&#x0211D;</mi><mn>2</mn></msup></mrow></math> 的一一对应：叠加原理给出线性，存在唯一性给出一一。所以解空间与 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>&#x0211D;</mi><mn>2</mn></msup></mrow></math> 同构，维数为 2。二阶方程有两个自由度，这正是维数是 2 的根本原因。</p>
+<p class="mp">第三步，说明两个线性无关解正好构成一组基。设 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>y</mi><mn>1</mn></msub><mo>&#x0002C;</mo><msub><mi>y</mi><mn>2</mn></msub></mrow></math> 线性无关，其朗斯基行列式为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>W</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mi>y</mi><mn>1</mn></msub><msubsup><mi>y</mi><mn>2</mn><mi>&#x02032;</mi></msubsup><mo>&#x02212;</mo><msubsup><mi>y</mi><mn>1</mn><mi>&#x02032;</mi></msubsup><msub><mi>y</mi><mn>2</mn></msub></mrow></math>。线性无关等价于存在某点 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>x</mi><mn>0</mn></msub></mrow></math> 使 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>W</mi><mo stretchy="false">&#x00028;</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">&#x00029;</mo><mo>&#x02260;</mo><mn>0</mn></mrow></math>；又由刘维尔公式 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>W</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mi>W</mi><mo stretchy="false">&#x00028;</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">&#x00029;</mo><mi>exp</mi><mo stretchy="false">&#x00028;</mo><mo>&#x02212;</mo><msubsup><mo>&#x0222B;</mo><mrow><msub><mi>x</mi><mn>0</mn></msub></mrow><mrow><mi>x</mi></mrow></msubsup><mi>p</mi><mo stretchy="false">&#x00028;</mo><mi>t</mi><mo stretchy="false">&#x00029;</mo><mspace width="0.167em" /><mi>d</mi><mi>t</mi><mo stretchy="false">&#x00029;</mo></mrow></math>，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>W</mi></mrow></math> 要么在整个区间上恒不为零，要么恒为零，不会只在个别点为零。因此「无关」这件事在整段区间上一致成立。</p>
+<p class="mp">第四步，说明任意解都能写成 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>C</mi><mn>1</mn></msub><msub><mi>y</mi><mn>1</mn></msub><mo>&#x0002B;</mo><msub><mi>C</mi><mn>2</mn></msub><msub><mi>y</mi><mn>2</mn></msub></mrow></math>。对 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>y</mi><mo>&#x0003D;</mo><msub><mi>C</mi><mn>1</mn></msub><msub><mi>y</mi><mn>1</mn></msub><mo>&#x0002B;</mo><msub><mi>C</mi><mn>2</mn></msub><msub><mi>y</mi><mn>2</mn></msub></mrow></math> 求导得 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>y</mi><mi>&#x02032;</mi></msup><mo>&#x0003D;</mo><msub><mi>C</mi><mn>1</mn></msub><msubsup><mi>y</mi><mn>1</mn><mi>&#x02032;</mi></msubsup><mo>&#x0002B;</mo><msub><mi>C</mi><mn>2</mn></msub><msubsup><mi>y</mi><mn>2</mn><mi>&#x02032;</mi></msubsup></mrow></math>。在 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>x</mi><mn>0</mn></msub></mrow></math> 处把两式联立，系数矩阵的行列式正是 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>W</mi><mo stretchy="false">&#x00028;</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">&#x00029;</mo><mo>&#x02260;</mo><mn>0</mn></mrow></math>，所以对任意给定的 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mi>a</mi><mo>&#x0002C;</mo><mi>b</mi><mo stretchy="false">&#x00029;</mo></mrow></math>，方程组 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>C</mi><mn>1</mn></msub><msub><mi>y</mi><mn>1</mn></msub><mo stretchy="false">&#x00028;</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0002B;</mo><msub><mi>C</mi><mn>2</mn></msub><msub><mi>y</mi><mn>2</mn></msub><mo stretchy="false">&#x00028;</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mi>a</mi></mrow></math>、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>C</mi><mn>1</mn></msub><msubsup><mi>y</mi><mn>1</mn><mi>&#x02032;</mi></msubsup><mo stretchy="false">&#x00028;</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0002B;</mo><msub><mi>C</mi><mn>2</mn></msub><msubsup><mi>y</mi><mn>2</mn><mi>&#x02032;</mi></msubsup><mo stretchy="false">&#x00028;</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mi>b</mi></mrow></math> 有唯一的解 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><msub><mi>C</mi><mn>1</mn></msub><mo>&#x0002C;</mo><msub><mi>C</mi><mn>2</mn></msub><mo stretchy="false">&#x00029;</mo></mrow></math>。再由存在唯一性，这个组合就是满足该初值的那个解，故任一解都能被覆盖。</p>
+<p class="mp">第五步，说明「线性无关」这个条件不能去掉。若 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>y</mi><mn>1</mn></msub><mo>&#x0002C;</mo><msub><mi>y</mi><mn>2</mn></msub></mrow></math> 线性相关，则 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>W</mi><mo>&#x02261;</mo><mn>0</mn></mrow></math>，上述方程组对某些初值无解；两个参数的组合只能填满解空间里的一条直线（一维子空间），不可能给出全部解。反过来，只拿一个解（一个参数）更不可能覆盖二维解空间。所以必须取两个线性无关解，它们的线性组合才叫通解。</p>
+<p class="mnote">结论：二阶线性齐次方程 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>y</mi><mi>&#x02033;</mi></msup><mo>&#x0002B;</mo><mi>p</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><msup><mi>y</mi><mi>&#x02032;</mi></msup><mo>&#x0002B;</mo><mi>q</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><mi>y</mi><mo>&#x0003D;</mo><mn>0</mn></mrow></math> 的通解是 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>y</mi><mo>&#x0003D;</mo><msub><mi>C</mi><mn>1</mn></msub><msub><mi>y</mi><mn>1</mn></msub><mo>&#x0002B;</mo><msub><mi>C</mi><mn>2</mn></msub><msub><mi>y</mi><mn>2</mn></msub></mrow></math>，其中 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>y</mi><mn>1</mn></msub><mo>&#x0002C;</mo><msub><mi>y</mi><mn>2</mn></msub></mrow></math> 为任意一组线性无关解，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>C</mi><mn>1</mn></msub><mo>&#x0002C;</mo><msub><mi>C</mi><mn>2</mn></msub></mrow></math> 为任意常数。论证链条是四环相扣——线性组合封闭（叠加原理）→ 解空间维数等于 2（存在唯一性）→ 线性无关保证任意初值都能解出 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><msub><mi>C</mi><mn>1</mn></msub><mo>&#x0002C;</mo><msub><mi>C</mi><mn>2</mn></msub><mo stretchy="false">&#x00029;</mo></mrow></math>（朗斯基行列式非零）→ 由此覆盖全部解。缺少「线性无关」这一环，参数个数不足以覆盖二维解空间，通解的说法就不成立。</p>
+</div>
+<div class="vr bad"><span class="lbl">独立校验：</span> 本题为概念题，无可代入的等式，改由人工核对（见验证报告）。</div>
+</div>
 <footer>共 7 题；自动求解 6 题；独立校验通过 6 题；未自动求解 1 题（实如留白）</footer>
 </body></html>

@@ -24,6 +24,35 @@ import parse_problems as PP  # noqa: E402
 import solve_kernel as K  # noqa: E402
 
 
+def _apply_manual_answers(solved):
+    """Attach author-written answers for concept problems the kernel refuses.
+
+    The kernel keeps such problems unsolved on purpose (no equation to plug in),
+    so the counts stay honest. This layer only adds clearly-labelled prose that
+    lives in a data file, never in code, so the source stays ASCII-only.
+    """
+    path = HERE.parent / "domain_skills" / "manual_answers.json"
+    if not path.exists():
+        print("[manual] applied=0 (no table)")
+        return 0
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            table = json.load(fh)
+    except Exception as exc:
+        print("[manual] skip: %s" % type(exc).__name__)
+        return 0
+    n = 0
+    for sol in solved.get("solutions", []):
+        item = table.get(str(sol.get("id", "")))
+        if not isinstance(item, dict):
+            continue
+        sol["manual_answer"] = item
+        n += 1
+    solved.setdefault("meta", {})["manual_answers"] = n
+    print("[manual] applied=%d" % n)
+    return n
+
+
 def _write_json(path, payload):
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", encoding="utf-8") as fh:
@@ -64,6 +93,7 @@ def main(argv):
     print("[stage2] problems=%d" % len(parsed))
 
     solved = K.solve_document({"problems": parsed}, {"domain": "linear_algebra_ode"})
+    _apply_manual_answers(solved)
     _write_json(out_dir / "3_solutions.json", solved)
     meta = solved["meta"]
     print("[stage3] total=%d solved=%d unsolved=%d verify_ok=%d verify_fail=%d"

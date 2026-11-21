@@ -140,6 +140,21 @@ table.sum th { background: #eef3fa; }
 .bad { color: #b03a2e; font-weight: bold; }
 footer { margin-top: 14pt; padding-top: 5pt; border-top: .6pt solid #ccc;
          font-size: 8.6pt; color: #777; }
+.prob { page-break-inside: avoid; margin: 0 0 6pt 0; }
+ol.steps { margin: 3pt 0 4pt 0; padding-left: 20pt; }
+ol.steps li { margin: 2.5pt 0; line-height: 1.6; }
+.seclbl { display: block; font-size: 8.4pt; font-weight: bold; color: #1d4e89;
+          letter-spacing: .3pt; margin: 6pt 0 1pt 0; text-transform: none; }
+.vr { border-left: 3pt solid #1d4e89; background: #f5f8fc; padding: 3pt 8pt;
+      margin: 4pt 0 2pt 0; font-size: 9.4pt; color: #26456b; }
+.vr .lbl { font-weight: bold; }
+.vr.bad { border-left-color: #b03a2e; background: #fdf3f2; color: #96271b; }
+.manual { border: .8pt dashed #b06f00; background: #fffdf5; padding: 6pt 9pt;
+          margin: 6pt 0 2pt 0; }
+.manual .mlbl { font-weight: bold; color: #8a5600; font-size: 9.6pt; margin-bottom: 3pt; }
+.manual p.mp { margin: 3pt 0; text-align: justify; line-height: 1.68; }
+.manual p.mnote { margin: 5pt 0 0 0; padding-top: 4pt; border-top: .5pt dotted #d8b878;
+                  color: #5c3d00; }
 """
 
 
@@ -189,9 +204,17 @@ def build_html(solutions, meta):
     return "\n".join(parts)
 
 
+_L_Q = "\u9898\u5e72"
+_L_STEP = "\u63a8\u5bfc\u6b65\u9aa4"
+_L_ANS = "\u6700\u7ec8\u7b54\u6848"
+_L_VERIFY = "\u72ec\u7acb\u6821\u9a8c"
+_L_MANUAL = "\u4eba\u5de5\u8865\u5145\u8bf4\u660e\uff08\u4f5c\u8005\u64b0\u5199\uff0c\u975e\u6c42\u89e3\u5668\u8f93\u51fa\uff09"
+_L_UNSOLVED = "\u672a\u81ea\u52a8\u6c42\u89e3"
+
+
 def render_problem(sol):
     pid = escape(str(sol.get("problem_id", sol.get("id", "")) or ""))
-    out = ["<h3>"]
+    out = ['<div class="prob">', "<h3>"]
     out.append(pid + ". ")
     out.append(rich(sol.get("title", "")))
     if sol.get("tag"):
@@ -200,25 +223,39 @@ def render_problem(sol):
     out.append("</h3>")
     _ptext = sol.get("problem_text") or sol.get("text") or ""
     if _ptext:
+        out.append('<div class="seclbl">' + _L_Q + "</div>")
         out.append('<div class="q">' + rich(_ptext) + "</div>")
     if sol.get("solved"):
         _steps = [s for s in (sol.get("steps") or []) if str(s).strip()]
         if _steps:
-            out.append('<div class="step"><strong>'
-                       + "\u89e3\u6cd5\u6b65\u9aa4\uff1a" + "</strong></div>")
-        for step in _steps:
-            out.append('<div class="step">' + rich(step) + "</div>")
+            out.append('<div class="seclbl">' + _L_STEP + "</div>")
+            out.append('<ol class="steps">')
+            for step in _steps:
+                out.append("<li>" + rich(str(step)) + "</li>")
+            out.append("</ol>")
         if sol.get("answer_latex"):
-            out.append('<div class="ans"><span class="lbl">'
-                       + "\u7b54\u6848\uff1a" + "</span> " + rich(_as_math(sol["answer_latex"])) + "</div>")
+            out.append('<div class="ans"><span class="lbl">' + _L_ANS
+                       + "\uff1a</span> " + rich(_as_math(sol["answer_latex"])) + "</div>")
     else:
-        out.append('<div class="unsolved"><strong>'
-                   + "\u672a\u81ea\u52a8\u6c42\u89e3\uff1a" + "</strong> "
-                   + rich(sol.get("reason", "")) + "</div>")
+        out.append('<div class="unsolved"><strong>' + _L_UNSOLVED
+                   + "\uff1a</strong> " + rich(sol.get("reason", "")) + "</div>")
+    _ma = sol.get("manual_answer")
+    if isinstance(_ma, dict):
+        _paras = [p for p in (_ma.get("paragraphs") or []) if str(p).strip()]
+        out.append('<div class="manual">')
+        out.append('<div class="mlbl">' + escape(_ma.get("label") or _L_MANUAL) + "</div>")
+        for _p in _paras:
+            out.append('<p class="mp">' + rich(str(_p)) + "</p>")
+        if _ma.get("note"):
+            out.append('<p class="mnote">' + rich(str(_ma["note"])) + "</p>")
+        out.append("</div>")
     for sub in sol.get("sub_solutions", []):
         out.append(render_problem(sub))
     if sol.get("verify"):
-        out.append('<div class="note">' + rich(sol["verify"]) + "</div>")
+        _ok = bool((sol.get("meta") or {}).get("verify_ok"))
+        out.append('<div class="vr' + ("" if _ok else " bad") + '"><span class="lbl">'
+                   + _L_VERIFY + "\uff1a</span> " + rich(sol["verify"]) + "</div>")
+    out.append("</div>")
     return "\n".join(out)
 
 
@@ -285,6 +322,62 @@ def pdf_text_check(pdf_path, min_chars=200):
     return "%s pages=%d chars=%d cjk=%d" % (verdict, len(rd.pages), len(txt), cjk)
 
 
+def _page_stamp(pdf_path, meta):
+    """Overlay a real page footer ("page i / n") onto the printed PDF.
+
+    Chromium's CLI cannot set a custom print footer template, and Chrome does
+    not support @page margin boxes, so the numbers come from a second one-page-
+    per-sheet overlay PDF merged with pypdf. Returns an ASCII status line.
+    """
+    try:
+        import pypdf
+    except Exception:
+        return "SKIP pypdf-missing"
+    try:
+        rd = pypdf.PdfReader(pdf_path)
+        n = len(rd.pages)
+    except Exception as exc:
+        return "SKIP %s" % type(exc).__name__
+    if n < 1:
+        return "SKIP no pages"
+    right = str(meta.get("stamp_right") or "")
+    sheets = []
+    for i in range(n):
+        sheets.append('<div class="pg"><div class="ft">' + str(i + 1) + " / " + str(n)
+                      + ((" &middot; " + escape(right)) if right else "") + "</div></div>")
+    html = ('<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8"><style>'
+            "@page{size:A4;margin:0}"
+            "*{box-sizing:border-box}"
+            'body{margin:0;font-family:"Microsoft YaHei","SimSun",serif;font-size:8.2pt;color:#777}'
+            ".pg{width:210mm;height:296.9mm;position:relative;page-break-after:always}"
+            ".ft{position:absolute;left:15mm;right:15mm;bottom:9mm;padding-top:2.5mm;"
+            "border-top:.5pt solid #d5d5d5;text-align:center}"
+            "</style></head><body>" + "".join(sheets) + "</body></html>")
+    tmp_html = os.path.join(tempfile.gettempdir(), "c4c_page_stamp.html")
+    tmp_pdf = os.path.join(tempfile.gettempdir(), "c4c_page_stamp.pdf")
+    try:
+        with open(tmp_html, "w", encoding="utf-8") as fh:
+            fh.write(html)
+    except Exception as exc:
+        return "SKIP write-%s" % type(exc).__name__
+    _ok, _info = html_to_pdf(tmp_html, tmp_pdf)
+    if not _ok:
+        return "SKIP stamp-render(%s)" % _info[:60]
+    try:
+        ov = pypdf.PdfReader(tmp_pdf)
+        wr = pypdf.PdfWriter(clone_from=pdf_path)
+        stamped = 0
+        for i, page in enumerate(wr.pages):
+            if i < len(ov.pages):
+                page.merge_translated_page(ov.pages[i], 0, 0)
+                stamped += 1
+        with open(pdf_path, "wb") as fh:
+            wr.write(fh)
+    except Exception as exc:
+        return "SKIP merge-%s" % type(exc).__name__
+    return "OK stamped=%d" % stamped
+
+
 def main(argv):
     if len(argv) < 4:
         print("usage: python render_html_pdf.py <solutions.json> <out.html> <out.pdf> [--title T] [--student S] [--course C]")
@@ -321,6 +414,8 @@ def main(argv):
     ok, info = html_to_pdf(argv[2], argv[3])
     print("[pdf] ok=%s %s" % (ok, info))
     if ok:
+        meta["stamp_right"] = (str(meta.get("student") or "") + " \u00b7 C4C").strip(" \u00b7")
+        print("[pdf-pages] %s" % _page_stamp(argv[3], meta))
         _chk = pdf_text_check(argv[3])
         print("[pdf-check] %s" % _chk)
         if _chk.startswith("FAIL"):

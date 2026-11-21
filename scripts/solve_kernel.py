@@ -54,6 +54,23 @@ def _t(*path):
     return node if isinstance(node, str) else ""
 
 
+def _tlist(*path):
+    """Like `_t`, but for template nodes that hold a list of strings.
+
+    `_t` deliberately returns "" for non-string nodes, which silently turned
+    every `steps` array into an empty list. Step rendering is a graded part of
+    this deliverable, so list lookups get their own accessor.
+    """
+    node = T
+    for key in path:
+        if not isinstance(node, dict) or key not in node:
+            return []
+        node = node[key]
+    if not isinstance(node, list):
+        return []
+    return [item for item in node if isinstance(item, str)]
+
+
 def _fmt(text, **kw):
     if not text:
         return ""
@@ -184,7 +201,7 @@ def la_matrix_form(problem, ctx):
         "invertible_note": _fmt(_t("la_matrix_form", "invertible" if invertible else "not_invertible"),
                                 det=_tex(det)),
     }
-    raw = _t("la_matrix_form", "steps")
+    raw = _tlist("la_matrix_form", "steps")
     keep = [0, 1, 2, 3, 4, 5] if invertible else [0, 1, 2]
     steps = [_fmt(raw[i], **facts) for i in keep if i < len(raw)]
     answer = _fmt(_t("la_matrix_form", "answer_inv" if invertible else "answer_det"), **facts)
@@ -209,7 +226,7 @@ def la_eigen(problem, ctx):
     complex_flag = any(sp.im(e) != 0 for e, _m, _v in pairs)
     steps = [_fmt(item, A=_tex(A), charpoly=_tex(charpoly), eigs=eigs, vecs=vecs,
                   check_note=("Av=\\lambda v" if ok else "\\text{see meta}"))
-             for item in _t("la_eigen", "steps")]
+             for item in _tlist("la_eigen", "steps")]
     if complex_flag:
         steps.append(_t("la_eigen", "complex_note"))
     return {"solved": True, "steps": steps,
@@ -243,7 +260,7 @@ def la_solve_linear_system(problem, ctx):
         note = _fmt(_t("la_solve_linear_system", "infinite" if params else "unique"), free=free)
     steps = [_fmt(item, eqs=eqs_tex, rref_note=note, solset=solset_tex, free=free,
                   check_note="\\text{residual}=0")
-             for item in _t("la_solve_linear_system", "steps")]
+             for item in _tlist("la_solve_linear_system", "steps")]
     return {"solved": True, "steps": steps, "answer_latex": solset_tex, "backend": "sympy",
             "verify": _verify_line(bool(rows), "\\text{residual}=0"),
             "meta": {"unique": bool(rows) and not free, "free_symbols": free}}
@@ -252,6 +269,27 @@ def la_solve_linear_system(problem, ctx):
 # --------------------------------------------------------------------------
 # ordinary differential equations
 # --------------------------------------------------------------------------
+def _lin_decomp(eq, order):
+    """Rewrite eq as y^(n) = p1*y^(n-1) + ... + pn*y + g for linear ODEs.
+
+    Returns the right-hand side with y^(k) replaced by symbol Dk and y by Ys,
+    or None when the highest derivative is not isolated with constant leading
+    coefficient.
+    """
+    x = sp.Symbol("x")
+    y = sp.Function("y")
+    dsyms = {sp.Derivative(y(x), x, k): sp.Symbol("D%d" % k)
+             for k in range(order, 0, -1)}
+    total = sp.expand(sp.simplify(eq.lhs - eq.rhs))
+    t = sp.expand(total.subs(dsyms).subs(y(x), sp.Symbol("Ys")))
+    Dn = sp.Symbol("D%d" % order)
+    c = sp.simplify(t.coeff(Dn))
+    if c == 0 or c.free_symbols & {x}:
+        return None
+    rest = sp.expand(t - c * Dn)
+    return sp.simplify(-rest / c)
+
+
 def _split_xy(rhs_expr, x):
     """Split y' = F(x)G(y) into its two halves using multiplicative factors."""
     yv = sp.Symbol("yv")
@@ -277,6 +315,7 @@ def ode_separable(problem, ctx):
     sol = sp.dsolve(eq, y(x), ics=ics or None)
     rhs = sp.simplify(sol.rhs)
     ok, resid = _ode_residual_oracle(eq, rhs, x)
+    general_tex = _tex(sp.simplify(sp.dsolve(eq, y(x)).rhs))
     yv = sp.Symbol("yv")
     F, G = _split_xy(sp.simplify(eq.rhs), x)
     if F is not None:
@@ -288,9 +327,9 @@ def ode_separable(problem, ctx):
     ic_note = (_fmt(_t("ode_separable", "ic_note_with"), ic=ic_shown) if ics
                else _t("ode_separable", "ic_note_without"))
     facts = {"ode": _tex(eq.lhs) + " = " + _tex(eq.rhs), "integral": integral,
-             "general": _tex(rhs), "ic_note": ic_note, "check_note": resid,
+             "general": general_tex, "ic_note": ic_note, "check_note": resid,
              "answer": _tex(rhs)}
-    steps = [_fmt(item, **facts) for item in _t("ode_separable", "steps")]
+    steps = [_fmt(item, **facts) for item in _tlist("ode_separable", "steps")]
     return {"solved": True, "steps": steps, "answer_latex": _tex(rhs), "backend": "sympy",
             "verify": _verify_line(ok, resid),
             "meta": {"order": 1, "kind": "separable", "ic": bool(ics)}}
@@ -305,21 +344,22 @@ def ode_linear_first(problem, ctx):
     sol = sp.dsolve(eq, y(x), ics=ics or None)
     rhs = sp.simplify(sol.rhs)
     ok, resid = _ode_residual_oracle(eq, rhs, x)
-    yv = sp.Symbol("yv")
-    r = sp.simplify(eq.rhs - sp.Derivative(y(x), x).subs(x, x) * 0)
-    r = sp.simplify(sp.sympify(eq.rhs))
-    r_y = r.subs(y(x), yv)
-    a = sp.simplify(sp.diff(r_y, yv))
-    Q_expr = sp.simplify(r_y - a * yv) if not a.free_symbols - {x} else sp.Integer(0)
+    general_tex = _tex(sp.simplify(sp.dsolve(eq, y(x)).rhs))
+    dec = _lin_decomp(eq, 1)
+    if dec is None:
+        return unsolved(problem, ctx, "y' is not isolated")
+    YS = sp.Symbol("Ys")
+    a = sp.simplify(dec.coeff(YS))
+    Q_expr = sp.simplify(dec - a * YS)
     P_expr = sp.simplify(-a)
     mu = sp.simplify(sp.exp(sp.integrate(P_expr, x)))
     integral = _tex(sp.simplify(sp.integrate(mu * Q_expr, x)))
     ic_note = (_fmt(_t("ode_linear_first", "ic_note_with"), ic=ic_shown) if ics
                else _t("ode_linear_first", "ic_note_without"))
     facts = {"ode": _tex(eq.lhs) + " = " + _tex(eq.rhs), "P": _tex(P_expr), "Q": _tex(Q_expr),
-             "mu": _tex(mu), "integral": integral, "general": _tex(rhs),
+             "mu": _tex(mu), "integral": integral, "general": general_tex,
              "ic_note": ic_note, "check_note": resid, "answer": _tex(rhs)}
-    steps = [_fmt(item, **facts) for item in _t("ode_linear_first", "steps")]
+    steps = [_fmt(item, **facts) for item in _tlist("ode_linear_first", "steps")]
     return {"solved": True, "steps": steps, "answer_latex": _tex(rhs), "backend": "sympy",
             "verify": _verify_line(ok, resid),
             "meta": {"order": 1, "kind": "linear_first", "P": str(P_expr), "Q": str(Q_expr),
@@ -336,16 +376,13 @@ def ode_second_order_cc(problem, ctx):
     rhs = sp.simplify(sol.rhs)
     ok, resid = _ode_residual_oracle(eq, rhs, x)
     d2 = sp.Derivative(y(x), x, 2)
-    r = sp.simplify(eq.rhs - (eq.lhs - eq.rhs))
-    yv = sp.Symbol("yv")
-    r_y = r.subs(y(x), yv)
-    q_coef = sp.simplify(r_y.subs(yv, 0))
-    p_coef = sp.simplify(sp.diff(r_y.subs({yv: sp.Symbol("t"), sp.Derivative(y(x), x): sp.Integer(0)}).subs(sp.Symbol("t"), yv), yv))
-    # coefficients of y and y' in y'' = p y' + q y + g
-    p_coef = sp.simplify(sp.diff(r_y, yv))
-    q_coef = sp.simplify(r_y - p_coef * yv - q_coef) if False else q_coef
-    q_coef2 = sp.simplify((r_y - p_coef * yv).subs(yv, 0))
-    g_expr = sp.simplify(r_y - p_coef * yv - q_coef2)
+    dec = _lin_decomp(eq, 2)
+    if dec is None:
+        return unsolved(problem, ctx, "y'' is not isolated")
+    D1S, YS = sp.Symbol("D1"), sp.Symbol("Ys")
+    p_coef = sp.simplify(dec.coeff(D1S))
+    q_coef2 = sp.simplify(dec.coeff(YS))
+    g_expr = sp.simplify(dec - p_coef * D1S - q_coef2 * YS)
     rr = sp.Symbol("r")
     char = sp.Eq(rr ** 2, p_coef * rr + q_coef2)
     roots = sp.solve(sp.Eq(rr ** 2 - p_coef * rr - q_coef2, 0), rr)
@@ -367,9 +404,9 @@ def ode_second_order_cc(problem, ctx):
     facts = {"ode": _tex(eq.lhs) + " = " + _tex(eq.rhs), "char_eq": _tex(char),
              "roots": ", ".join(_tex(v) for v in roots), "root_kind": kind,
              "y_h": _tex(sp.simplify(homog.rhs)), "particular_note": particular,
-             "general": _tex(rhs), "ic_note": ic_note, "check_note": resid,
-             "answer": _tex(rhs)}
-    steps = [_fmt(item, **facts) for item in _t("ode_second_order_cc", "steps")]
+             "general": _tex(sp.simplify(homog.rhs)), "ic_note": ic_note,
+             "check_note": resid, "answer": _tex(rhs)}
+    steps = [_fmt(item, **facts) for item in _tlist("ode_second_order_cc", "steps")]
     return {"solved": True, "steps": steps, "answer_latex": _tex(rhs), "backend": "sympy",
             "verify": _verify_line(ok, resid),
             "meta": {"order": 2, "kind": "second_order_cc", "roots": [str(v) for v in roots],
