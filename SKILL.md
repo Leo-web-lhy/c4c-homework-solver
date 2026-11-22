@@ -1,299 +1,83 @@
-# Homework Auto-Solver & Formatter
-
-> 从作业文件到可提交 PDF，一条命令搞定。
-> Ontology-grounded, retrieval-augmented homework solving.
-
-## Skill Invocation
-
-**Triggers:** "solve this homework", "auto-solve worksheet", "run the homework solver", "求解作业", "自动解题", or when a user provides a math worksheet (.md, .pdf, .docx, .png) and asks for solutions.
-
-**Usage:** When triggered, the agent should:
-
-1. **Locate the input file.** The user may upload a file, paste text, or point to a path. If text is pasted, save it as a temporary `.md` file first.
-
-2. **Run the pipeline:**
-```bash
-SKILL_DIR="<path-to-this-skill-directory>"
-python "$SKILL_DIR/scripts/pipeline.py" <input_file> <output_dir> [--compile] [--course "Math 1A"] [--student "Name"]
-```
-
-3. **Report results.** Show the solve rate (X/Y solved), list any unsolved problems, and provide the output files (`.tex` and optionally `.pdf`).
-
-4. **For Chinese output:** Generate Chinese worksheets and answer sheets using XeLaTeX with Noto Sans CJK SC. See the exemplar `*_cn.pdf` files at the project root.
-
-**Parameters:**
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `input` | (required) | Path to homework file (.md, .pdf, .docx, image) |
-| `output_dir` | (required) | Where to write output files |
-| `--compile` | off | Compile LaTeX to PDF (requires pdflatex/xelatex) |
-| `--course` | "Mathematics" | Course name for header |
-| `--student` | "Student" | Student name for header |
-| `--title` | "Homework Solutions" | Title for the document |
-
-**Output files:**
-| File | Content |
-|------|---------|
-| `1_ingested.json` | Raw text extraction with section boundaries |
-| `2_parsed.json` | Structured problems with classifications |
-| `3_solutions.json` | Solutions with steps, answers, and solve status |
-| `homework.tex` | Formatted LaTeX document |
-| `homework.pdf` | Compiled PDF (if `--compile` used) |
-
-**Dependencies:** `pip install sympy pyyaml` (see `requirements.txt`)
-
-**Example agent interaction:**
-```
-User: "Here's my Math 1A worksheet on limits. Can you solve it?"
-Agent: [saves uploaded file] → [runs pipeline] → "Solved 9/10 problems (90%).
-       AP3 (geometric derivation) requires manual solving.
-       Here's your answer sheet: [link to homework.tex]"
-```
-
+---
+name: homework-solver-cn
+description: 把中文数学作业原件（.md）解析成结构化题目、用 SymPy 确定性求解并走独立通道校验、再排版成可提交的 PDF 答案卷；PDF 生成后强制内容级自检，杜绝“空白 PDF 但退出码为 0”。
+version: 1.0.0
+author: 2023108610260
 ---
 
-## Architecture Overview
+# 作业自动求解与排版技能（本仓库实现版）
 
-This skill uses an **ontology-grounded** approach: domain knowledge (concepts, solution methods, classification rules) is separated from problem instances. The solver's capability is determined by what it has *learned* from oracle sources, not by hard-coded patterns.
+> 本文件已重写为**实际实现**的说明。starter 原版的 `SKILL.md` 描述的是一条 LaTeX / `--compile` 主路径，
+> 本机无 `pdflatex/xelatex/lualatex/latexmk/tectonic/pandoc`，该路径已不可用；真实路径是
+> **HTML + MathML + 浏览器打印 + pypdf 文本自检**。两者差异见 `docs/2023108610260_C4C_方案设计.md`。
 
-**The key insight:** Solve rate = domain coverage. To solve more problems, expand the domain knowledge — don't write more regex.
+## 何时使用
 
-The pipeline works in 5 stages:
-```
-Input → Ingest → Parse + Classify → Solve → Render LaTeX → Compile PDF
-```
+**适用**：有明确数学表达式的中文作业（线性代数、一阶/二阶 ODE、可直接求值的极限/导数），
+要求给出可复算的推导与答案卷。
 
-Study the code in `scripts/` and the domain definitions in `domain_skills/` to understand how classification, retrieval, and solving work together. The `oracles/` directory contains the source knowledge that was distilled into the domain definitions.
+**不适用**：纯证明题、需要几何作图或开放论证的题目（本流水线不猜答案，一律留白转人工，见“失败语义”）。
 
-**Oracle sources** (knowledge distilled from these into the solver):
-1. **Textbook** — Stewart, Calculus: Early Transcendentals, Ch. 2
-2. **Exemplars** — Berkeley Math 1A Worksheets 3–4
-3. **Study Guide** — common errors, misconceptions, learning sequence
-4. **Instructor + Pedagogy Guides** — proof methods, scaffolding, grading rubrics
-
----
-
-## Quick Start
-
-### Dependencies
+## 一条命令
 
 ```bash
-pip install sympy pyyaml --break-system-packages
-# Optional (extended format support):
-# pip install pdfplumber python-docx pytesseract Pillow
+pip install -r requirements.txt
+python scripts/run_domain.py <作业原件.md> <输出目录> [--title "标题"]
 ```
 
-### One-Command Run
+真实示例：
 
 ```bash
-python scripts/pipeline.py examples/sample_homework.md output/
+python scripts/run_domain.py problems/2023108610260_C4C_作业原件.md output --title "2023108610260_C4C 作业解答"
 ```
 
-### Step-by-Step
+## 输入 / 输出契约
 
-```bash
-# Stage 1: Document Ingestion
-python scripts/ingest.py homework.md output/1_ingested.json
+| 阶段 | 产物 | 关键字段 |
+|---|---|---|
+| 1 ingest | `1_ingested.json` | `text`、`lines`、分段边界 |
+| 2 parse | `2_parsed.json` | `problems[]`：`problem_id`、`problem_text`、`exprs[]` |
+| 2.5 manual | 合并 `domain_skills/manual_answers.json` | `applied=N`，人工作答案显式标注来源 |
+| 3 solve | `3_solutions.json` | 每题 `steps[]`、`answer`、`meta.verify_ok`、汇总 `total/solved/unsolved/verify_ok/verify_fail` |
+| 4 render | `homework.html` | 题干 / 推导步骤 / 最终答案 / 独立校验 四分区，MathML 公式 |
+| 5 print | `homework.pdf` | 逐页页码戳记 + `pdf_text_check()` 内容门 |
 
-# Stage 2: Problem Parsing + Classification
-python scripts/parse_problems.py output/1_ingested.json output/2_parsed.json
+## 退出码语义（可被 CI 直接判定）
 
-# Stage 3: Solving
-python scripts/solve.py output/2_parsed.json output/3_solutions.json
+| 码 | 含义 | 触发点 |
+|---|---|---|
+| `0` | 全链路通过，且 PDF 文本自检合格 | `run_domain.py` 正常结束 |
+| `2` | PDF 生成失败（无可用浏览器 / 打印超时 / 输出文件缺失） | stage4 `rc!=0` |
+| `7` | **内容门失败**：抽出的正文 < 200 字符或中文字符数为 0 | `pdf_text_check()` |
 
-# Stage 4: LaTeX Generation
-python scripts/render_latex.py output/3_solutions.json output/homework.tex
+`7` 是本技能最重要的一条：文件非空、`rc=0`、`ok=True` 都不构成“排版成功”的证据，只有从 PDF 里
+抽出足量含中文的正文才算。
 
-# Stage 5: PDF Compilation (requires LaTeX)
-python scripts/render_latex.py output/3_solutions.json output/homework.tex --compile
-```
+## 如何扩展题型（不写正则，扩领域知识）
 
-## Five-Stage Pipeline
+1. 在 `domain_skills/linear_algebra_ode.yaml` 增加分类规则（题面特征 → 题型键）。
+2. 在 `domain_skills/la_ode_templates.json` 增加该题型的求解模板与中文文案
+   （`solve_kernel.py` 源码保持纯 ASCII，中文只放该 JSON）。
+3. 若需独立校验，在模板里声明 `verify` 方法：矩阵用 `A·A⁻¹=I`，特征值用 `A·v=λ·v`，
+   ODE 用回代残差并强制 `.doit()` 后再 `simplify()`（否则未求值导数会让残差恒不为 0）。
+4. 跑 `output/3_solutions.json` 的 `verify_fail` 必须为 0，再跑渲染。
 
-### Stage 1 — Document Ingestion (`ingest.py`)
+## 失败语义（本技能的硬规则）
 
-Reads homework files and extracts structured text with section boundaries.
+- **求解失败不编造**：解析不出表达式或模板未覆盖时，该题 `solved=false` 并在答案卷留白说明原因。
+- **概念题走人工通道**：写入 `domain_skills/manual_answers.json`，渲染时单独成区并标注“非求解器输出”。
+- **校验失败不掩盖**：`verify_ok=false` 的题必须在答案卷保留“校验未通过”标记，不允许只看最终答案像不像。
 
-| Format | Status | Implementation |
-|--------|--------|----------------|
-| Markdown (.md) | ✅ Starter | Direct parse |
-| PDF (text) | 🔧 Student L2 | pdfplumber |
-| PDF (scanned) | 🔧 Student L2 | Tesseract OCR |
-| Word (.docx) | 🔧 Student L2 | python-docx |
-| Image (.png/.jpg) | 🔧 Student L3 | Claude Vision |
+## 已知边界
 
-### Stage 2 — Problem Parsing (`parse_problems.py`)
+- 仅 Windows + Python 3.12.13 实跑；未做 Linux/macOS 验证，未接 CI。
+- 无 LLM 对照基线（本机 4 家厂商密钥均未配置），替代为人工逐题手算复核。
+- 排版非原生 LaTeX，规范度受浏览器打印能力限制。
 
-Extracts problem structure: ID, text, math expressions, sub-problems.
-Classifies each problem against the domain knowledge.
+## 相关文档
 
-Recognized problem ID formats:
-```
-Problem 1 / 题 1 / 1. / 1) / Q1 / Exercise 1
-Sub-problems: (a), a), a.
-Section detection: Questions, Problems, Additional Problems, Part A/B/C
-Heading-embedded IDs: ### Problem 1: Title
-```
-
-### Stage 3 — Solving (`solve.py`)
-
-The solver routes each problem through:
-
-1. **Classify** — match problem features to domain knowledge
-2. **Retrieve** — find the appropriate solution method
-3. **Instantiate** — bind problem variables to the method
-4. **Execute** — run using the prescribed tool (SymPy, template, etc.)
-5. **Validate** — check answer form
-
-#### Current Domain Coverage (Limits)
-
-The starter kit covers **calculus limits** — tangent lines, ε-δ proofs, one-sided limits, squeeze theorem, continuity, and more. See `domain_skills/calculus_limits.yaml` for the full definition.
-
-#### Adding a New Domain
-
-To cover a new problem domain (e.g., derivatives, integrals, linear algebra):
-
-1. Create `domain_skills/your_domain.yaml` — define concepts, solution methods, classification rules
-2. Implement solver templates in `solver_templates/`
-3. Register in the pipeline — the classify → retrieve → solve chain handles routing automatically
-
-Study the existing `calculus_limits.yaml` carefully as a reference for your own domains.
-
-### Stage 4 — LaTeX Generation (`render_latex.py`)
-
-Generates professional LaTeX with:
-- Course header with student name
-- Problem/solution structure with `\problem{}` and `\solution{}` environments
-- Boxed final answers
-- Proper amsmath formatting
-
-### Stage 5 — PDF Compilation
-
-Requires LaTeX environment (pdflatex or xelatex), or upload `.tex` to Overleaf.
-
-## Extending the Solver
-
-### The Right Way: Expand Domain Knowledge
-
-```yaml
-# Add a new concept node to domain_skills/your_domain.yaml
-- id: integration_by_parts
-  type: solution_method
-  concept: integral
-  name: "Integration by parts"
-  applies_when: "Product of two functions where one simplifies under differentiation"
-  tool: sympy
-  solver_template: sympy_solvers/integration_by_parts.py
-  input_schema:
-    u_expr: "function to differentiate"
-    dv_expr: "function to integrate"
-  output_form: "expression + C"
-```
-
-Then implement the solver template:
-```python
-# solver_templates/sympy_solvers/integration_by_parts.py
-def solve(u_expr, dv_expr, variable):
-    u = u_expr
-    v = integrate(dv_expr, variable)
-    result = u * v - integrate(v * diff(u, variable), variable)
-    return {"solved": True, "answer": result, ...}
-```
-
-### The Quick Way: Add a Solver Function (backward compatible)
-
-```python
-# In solve.py — register directly
-def solve_my_topic(problem: dict) -> dict:
-    return _make_solution(problem, steps, answer)
-
-SOLVERS["my_topic"] = solve_my_topic
-```
-
-## File Structure
-
-```
-c4c-homework-solver-starter/
-├── SKILL.md                          ← This file
-├── CHALLENGE.md                      ← Student challenge guide (L1→L4)
-├── scripts/
-│   ├── ingest.py                     ← Stage 1: Document ingestion
-│   ├── parse_problems.py             ← Stage 2: Problem parsing + classification
-│   ├── classify.py                   ← Classifier (concept → solver mapping)
-│   ├── retrieve.py                   ← Retriever (solver template lookup)
-│   ├── solve.py                      ← Stage 3: Solving + conceptual templates
-│   ├── render_latex.py               ← Stage 4: LaTeX generation + Stage 5: PDF
-│   └── pipeline.py                   ← One-command orchestrator
-├── domain_skills/                    ← Domain knowledge definitions
-│   └── calculus_limits.yaml          ← Limits domain (Berkeley Math 1A)
-├── solver_templates/                 ← Parameterized solver code
-│   ├── sympy_solvers/
-│   │   ├── limit_direct.py           ← Direct limit computation
-│   │   └── limit_dne.py              ← Limit DNE proof
-│   └── template_solvers/
-│       └── epsilon_delta_notation.py ← ε-δ notation templates
-├── oracles/                          ← Oracle source documents
-│   ├── 01_textbook_stewart.md
-│   ├── 02_study_guide.md
-│   ├── 03_instructor_guide.md
-│   ├── 04_pedagogy_guide.md
-│   └── 05_exemplars.md
-├── references/
-│   ├── homework_template.tex         ← LaTeX template
-│   └── sympy_cheatsheet.md          ← SymPy quick reference
-├── examples/
-│   └── sample_homework.md           ← 10-problem sample input
-├── test_cases/
-│   ├── test1_tangent_epsilon_delta.md  ← Berkeley Worksheet 3 (8 problems)
-│   ├── test2_limits.md                 ← Berkeley Worksheet 4 (10 problems)
-│   ├── test1_output/                   ← Validated output for test 1
-│   └── test2_output/                   ← Validated output for test 2
-├── test1_worksheet_cn.pdf            ← Chinese worksheet (切线与 ε-δ)
-├── test1_answers_cn.pdf              ← Chinese answers with solution steps
-├── test2_worksheet_cn.pdf            ← Chinese worksheet (函数的极限)
-├── test2_answers_cn.pdf              ← Chinese answers with solution steps
-├── challenge_answers_cn.tex          ← Advanced challenge problems LaTeX source
-└── challenge_answers_cn.pdf          ← Advanced challenge answers (5 problems)
-```
-
-## Test Results
-
-Validated against Berkeley Math 1A Worksheets 3–4:
-
-| Test Case | Problems | Solved | Rate | Notes |
-|-----------|----------|--------|------|-------|
-| Test 1: Tangent & ε-δ | 8 | 8 | **100%** | All subs solved |
-| Test 2: Limits | 10 | 9 | **90%** | Only AP3 (geometric derivation) unsolved |
-| **Combined** | **18** | **17** | **94.4%** | Limits domain only |
-| Challenge (advanced) | 5 | 2 | **40%** | Beyond limits domain (manual: 5/5) |
-
-**Important caveat:** The 94.4% rate applies to the **limits domain only**. When tested against 5 advanced problems (integration, optimization, combinatorics, physics), the pipeline auto-solved only 2/5 (40%). This demonstrates that the solver's capability is scoped to its domain knowledge — extending to new domains is your challenge (see CHALLENGE.md).
-
-## Chinese PDF Outputs
-
-| File | Content | Pages |
-|------|---------|-------|
-| `test1_worksheet_cn.pdf` | 工作单 3：切线与 ε-δ 预备知识 | 2 |
-| `test1_answers_cn.pdf` | 参考答案（含解题步骤） | 3 |
-| `test2_worksheet_cn.pdf` | 工作单 4：函数的极限 | 2 |
-| `test2_answers_cn.pdf` | 参考答案（含解题步骤） | 5 |
-| `challenge_answers_cn.pdf` | 高等微积分挑战题参考答案 | 7 |
-
-Chinese PDFs use XeLaTeX + Noto Sans CJK SC with `\XeTeXlinebreaklocale "zh"` for proper CJK line-breaking.
-
-## Limitations & What You Can Build
-
-| Current Limitation | What's Missing | Your Extension Path |
-|-------------------|---------------|---------------------|
-| Only solves limits problems | No integration/derivatives/linear algebra domains | Build new domain YAML + solvers (L2) |
-| Proof problems fail | No LLM solver for multi-step reasoning | Add `tool: llm` solver template (L4) |
-| No PDF/image input | Only Markdown ingestion implemented | Add pdfplumber, OCR, Claude Vision (L2) |
-| No learning loop | Solver doesn't improve from experience | Add success tracking + oracle invocation (L4) |
-| Geometric reasoning | No spatial/construction reasoning | Add geometric concept + LLM solver (L4) |
-
-**What's already working:**
-- Counterexample reasoning via knowledge templates
-- Abstract-function sub-problems via template-first matching
-- Graph sketching subs via placeholder recognition
-- Chinese PDF generation with professional formatting
-- Heading-format problem ID parsing
+- 方案设计与取舍：`docs/2023108610260_C4C_方案设计.md`
+- 逐题结果与 9 个真实缺陷：`docs/2023108610260_C4C_验证报告.md`
+- 复盘与改进状态：`docs/2023108610260_C4C_AAR.md`
+- 教学场景用法：`docs/2023108610260_C4C_教学说明.md`
+- 评分维度对照证据：`docs/2023108610260_C4C_评审对照表.md`
