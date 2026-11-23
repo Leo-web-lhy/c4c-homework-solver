@@ -22,8 +22,14 @@ author: 2023108610260
 
 ```bash
 pip install -r requirements.txt
-python scripts/run_domain.py <作业原件.md> <输出目录> [--title "标题"]
+python homework-solver.py                              # 用仓库自带作业原件，输出到 output/
+python homework-solver.py <作业原件.md> <输出目录> [--title "标题"]
+python homework-solver.py --selfcheck output/homework.pdf   # 只跑内容门
 ```
+
+`homework-solver.py` 是**规范入口**（与技能同名），内部委托 `scripts/run_domain.py` 跑完五个阶段，
+并在末尾强制走 `pdf_text_check()`；它不承载业务逻辑，只保证"叫得出技能名，就找得到一个能跑的命令"。
+`scripts/run_domain.py` 仍然可以直接调用（两者参数与退出码一致）。
 
 真实示例：
 

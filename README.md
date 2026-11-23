@@ -13,9 +13,10 @@ C4C 挑战交付仓库：把一份**非微积分极限方向**的作业原件，
 | 作业原件 | 7 题（6 计算 + 1 概念）· 线性代数 ×3、一阶 ODE ×2、二阶常系数 ODE ×1 |
 | 自动求解 | **6 / 7**（概念题如实留白，不编造） |
 | 独立校验 | **6 / 6 通过**，`verify_fail = 0` |
-| 最终 PDF | [`2023108610260_C4C_output.pdf`](2023108610260_C4C_output.pdf) · 2 页 · 240,718 B · 中文可渲染 |
-| 文本级自检 | `[pdf-check] OK pages=2 chars=925 cjk=288` |
-| 端到端耗时 | 求解 + 渲染 ≈ 2.2 秒 |
+| 最终 PDF | [`2023108610260_C4C_output.pdf`](2023108610260_C4C_output.pdf) · 6 页 · 833,577 B · 中文可渲染 |
+| 文本级自检 | `[pdf-check] OK pages=6 chars=4163 cjk=1383` |
+| 渲染耗时 | PDF 渲染 3.7 秒 + 页码戳记（run7 实测） |
+| 每题结构 | 题干 / 推导步骤 / 最终答案 / 独立校验 四分区，6 道计算题步骤数 6·6·5·7·7·7 |
 
 机器可读计数：`output/3_solutions.json` → `{"total":7,"solved":6,"unsolved":1,"verify_ok":6,"verify_fail":0}`。
 
@@ -23,13 +24,16 @@ C4C 挑战交付仓库：把一份**非微积分极限方向**的作业原件，
 
 | 文件 | 内容 |
 |---|---|
+| `homework-solver.py` | **规范入口（与技能同名）**：`python homework-solver.py` 一条命令跑完五阶段并强制内容门，`--selfcheck <pdf>` 单独跑 PDF 文本校验 |
 | `2023108610260_C4C_output.pdf` | **最终答案卷（PDF）** |
 | `2023108610260_C4C_output.html` | 同一份内容的 HTML 源（MathML 公式） |
 | `docs/2023108610260_C4C_方案设计.md` | 方案设计：目标取舍、架构、内核设计、失败处理、与 starter 的关系 |
-| `docs/2023108610260_C4C_验证报告.md` | 验证报告：逐题结果 + 人工复核 + 6 个真实缺陷 + 未覆盖边界 |
+| `docs/2023108610260_C4C_验证报告.md` | 验证报告：逐题结果 + 人工复核 + 9 个真实缺陷 + 未覆盖边界 |
 | `docs/2023108610260_C4C_AAR.md` | AAR 复盘：预期 vs 实际、4 个卡点的根因归类、8 项改进（已落地 / 未落地如实标注） |
 | `docs/2023108610260_C4C_AI日志.md` | AI 协作日志：按阶段记录任务 / 协作方式 / 产出物 / 人工介入 |
 | `docs/2023108610260_C4C_教学说明.md` | 教学说明：这份流水线怎么用在教学与作业批改场景 |
+| `docs/2023108610260_C4C_评审对照表.md` | 评分维度 → 可点开证据的对照表（含边界情况处理与未达标项） |
+| `SKILL.md` | **可复用技能文件（本仓库实现版，已重写）**：真实命令、五阶段输出契约、退出码 0/2/7、题型扩展步骤、失败语义 |
 | `problems/2023108610260_C4C_作业原件.md` | 作业原件（自命题，已声明） |
 | `output/` | 五阶段中间产物：`1_ingested.json` → `2_parsed.json` → `3_solutions.json` → `homework.html` → `homework.pdf` |
 
@@ -37,6 +41,12 @@ C4C 挑战交付仓库：把一份**非微积分极限方向**的作业原件，
 
 ```bash
 pip install -r requirements.txt
+python homework-solver.py --title "2023108610260_C4C 作业解答"
+```
+
+等价写法（参数与退出码完全一致，`homework-solver.py` 内部就是委托它）：
+
+```bash
 python scripts/run_domain.py problems/2023108610260_C4C_作业原件.md output --title "2023108610260_C4C 作业解答"
 ```
 
@@ -45,11 +55,16 @@ python scripts/run_domain.py problems/2023108610260_C4C_作业原件.md output -
 ```
 [stage1] chars=608 lines=29
 [stage2] problems=7
+[manual] applied=1
 [stage3] total=7 solved=6 unsolved=1 verify_ok=6 verify_fail=0
 [stage4] rc=0
-[pdf] ok=True rc=0 2.2s 240718B
-[pdf-check] OK pages=2 chars=925 cjk=288
+[pdf] ok=True rc=0 3.7s 638351B
+[pdf-pages] OK stamped=6
+[pdf-check] OK pages=6 chars=4163 cjk=1383
+[stage5] pdf_bytes=833577 html_bytes=36070
 ```
+
+注：`[pdf]` 行是浏览器打印出的原始文件大小，`[pdf-pages]` 用 pypdf 逐页加页码戳记后写出最终文件，因此 `[stage5]` 的字节数大于打印行。
 
 退出码：`0` 成功；`2` PDF 生成失败；**`7` PDF 文本自检不通过**（正文 < 200 字符或无中文）。
 
@@ -75,7 +90,7 @@ python scripts/run_domain.py problems/2023108610260_C4C_作业原件.md output -
 ## 与 starter 的关系
 
 - **复用**：`scripts/ingest.py`、`scripts/parse_problems.py`、`scripts/bootstrap.py`、`domain_skills/` 的 YAML 结构、`oracles/`、`references/`、`test_cases/` 保留在原处作为参考基线。
-- **新增**：`scripts/solve_kernel.py`（约 21.7 KB，纯 ASCII 源码，中文文案外置到 `domain_skills/la_ode_templates.json`）、`scripts/run_domain.py`、`scripts/render_html_pdf.py`、`domain_skills/linear_algebra_ode.yaml`。
+- **新增**：`scripts/solve_kernel.py`（22,860 B，纯 ASCII 源码，中文文案外置到 `domain_skills/la_ode_templates.json`）、`scripts/run_domain.py`、`scripts/render_html_pdf.py`、`domain_skills/linear_algebra_ode.yaml`、`domain_skills/manual_answers.json`。
 - **未使用**：starter 自带的 `test1/test2` 工作单经文本抽取确认为**微积分极限方向**（「切线与 ε‑δ 预备知识」「函数的极限」），与挑战要求冲突，故不作为作业原件。
 
 ## 已知边界（不粉饰）
